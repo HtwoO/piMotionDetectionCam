@@ -22,7 +22,6 @@ def captureHiResImage(p, res=(800, 600)):
     with picamera.PiCamera() as camera:
         camera.resolution = res
         camera.capture(p)
-        print('Motion Detected.\n')
 
 
 def motionDetected(lastImg, curImg):
@@ -59,6 +58,7 @@ if __name__ == '__main__':
             fileName = 'MotionImage_' + timeStamp + '.jpg'
             filePath = srcDir + fileName
             captureHiResImage(p=filePath, res=hiRes)
+            print('Motion Detected.\n')
             # backupToSomewhere(srcFilePath, dstDir)
             image0 = image1
             sleep(3)
