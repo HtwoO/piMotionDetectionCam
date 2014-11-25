@@ -14,7 +14,7 @@ Install [qiniu](https://github.com/qiniu/python-sdk/) with the following command
 
 ###Run the program
 
-Signup a [QiNiu Cloud Storage（七牛存存储）](http://www.qiniu.com/) account. Fill in the appropriate field in the file credentials.py with your own QiNiu service information.
+Signup for a [QiNiu Cloud Storage（七牛云存储）](http://www.qiniu.com/) account. Fill in the appropriate field in the file credentials.py with your own QiNiu service information.
 ```
 QINIU_ACCESS_KEY = ''
 QINIU_SECRET_KEY = ''
