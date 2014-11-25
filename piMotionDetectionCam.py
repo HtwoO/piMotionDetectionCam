@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 #coding: utf-8
 
-import sys
+import os, sys
 import io, picamera
 from time import sleep
 from datetime import datetime
 from PIL import Image
+
+from qiniu import Auth, put_file
+from credentials import QINIU_ACCESS_KEY, QINIU_SECRET_KEY, QINIU_BUCKET_NAME
 
 def captureTestImage(res=(128, 96)):
     stream = io.BytesIO()
@@ -42,11 +45,24 @@ def motionDetected(lastImg, curImg):
     return False
 
 
+def backupToQiNiu(bucket_name, srcFilePath, key='fileName'):
+    access_key = QINIU_ACCESS_KEY
+    secret_key = QINIU_SECRET_KEY
+    qnAuth = Auth(access_key, secret_key)
+    token = qnAuth.upload_token(bucket_name, key)
+    ret, info = put_file(token, key, srcFilePath)
+    if ret is not None:
+        print('Done backing up to QiNiu cloud storage.')
+    else:
+        print(info)
+
+
 if __name__ == '__main__':
     lowRes = (80, 60)
     hiRes = (1024, 768)
     srcDir = '/home/pi/pi_camera/MotionImages/'
     # dstDir = '/path/to/dst/dir/'
+    bucket_name = QINIU_BUCKET_NAME
 
     image0 = captureTestImage(lowRes)
     while True:
@@ -58,9 +74,10 @@ if __name__ == '__main__':
             fileName = 'MotionImage_' + timeStamp + '.jpg'
             filePath = srcDir + fileName
             captureHiResImage(p=filePath, res=hiRes)
-            print('Motion Detected.\n')
-            # backupToSomewhere(srcFilePath, dstDir)
+            print('Motion Detected.')
             image0 = image1
-            sleep(3)
+            # backupToSomewhere(srcFilePath, dstDir)
+            backupToQiNiu(bucket_name, srcFilePath=filePath, key=fileName)
+            # sleep(3)
 
     sys.exit()
